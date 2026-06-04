@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { open } from "@tauri-apps/plugin-dialog";
 import {
   CheckCircle2,
   CircleAlert,
@@ -228,9 +229,25 @@ function App() {
       addDemoJobs();
       return;
     }
-    const outputDir = tools?.outputDir;
-    if (outputDir) {
-      await invoke("reveal_path", { path: outputDir });
+
+    setGlobalError(null);
+    try {
+      const selected = await open({
+        multiple: true,
+        directory: false,
+        title: "Choose videos",
+        filters: [
+          {
+            name: "Video",
+            extensions: ["mp4", "mov", "m4v", "avi", "mkv", "webm"],
+          },
+        ],
+      });
+
+      if (!selected) return;
+      await addVideosFromPaths(Array.isArray(selected) ? selected : [selected]);
+    } catch (error) {
+      setGlobalError(String(error));
     }
   }
 
@@ -415,7 +432,7 @@ function App() {
 
         <button className="primary-action" onClick={selectVideos}>
           <Upload size={18} />
-          {previewMode ? "Add demo" : "Open Finder"}
+          {previewMode ? "Add demo" : "Choose videos"}
         </button>
 
         <nav className="tabs" aria-label="Views">

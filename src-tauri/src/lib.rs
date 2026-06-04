@@ -111,6 +111,7 @@ impl serde::Serialize for AppError {
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             check_tools,
             videos_from_paths,
