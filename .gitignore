@@ -1,5 +1,12 @@
 /node_modules
 /dist
 /src-tauri/target
+/.build
 /.DS_Store
 *.log
+/src-tauri/binaries/tools/*
+!/src-tauri/binaries/tools/README.md
+/src-tauri/binaries/models/*
+!/src-tauri/binaries/models/README.md
+/src-tauri/binaries/whisper/models/*
+!/src-tauri/binaries/whisper/models/README.md

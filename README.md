@@ -28,10 +28,18 @@ Subtitle/transcript outputs require a local or bundled `whisper.cpp` binary and 
 
 ```sh
 npm install
-python3 -m pip install auto-editor
+npm run prepare:tools
 ```
 
-`auto-editor` usually installs or expects FFmpeg support. The app checks for `auto-editor`, `ffmpeg`, `ffprobe`, and `whisper.cpp` and shows missing engines in the sidebar.
+The app checks for `auto-editor`, `ffmpeg`, `ffprobe`, and `whisper.cpp` and shows missing engines in the sidebar.
+
+`npm run prepare:tools` prepares bundled macOS arm64 tools in `src-tauri/binaries/tools`:
+
+- `auto-editor` is built from `WyattBlue/auto-editor` tag `30.4.0` with a local Nim toolchain and static FFmpeg libraries.
+- `ffmpeg` is copied from `ffmpeg-static` `5.3.0`.
+- `ffprobe` is copied from `@ffprobe-installer/ffprobe` `2.1.2`.
+
+The generated binaries are ignored by git. `npm run tauri build` runs `prepare:tools` before packaging, so the `.app` and `.dmg` include the required video engines.
 
 Tool lookup order:
 
@@ -42,7 +50,7 @@ Tool lookup order:
 - project `src-tauri/binaries/tools/`;
 - user `PATH`.
 
-For local packaging, place executables in:
+For local packaging, generated executables are placed in:
 
 ```text
 src-tauri/binaries/tools/auto-editor
@@ -66,6 +74,7 @@ src-tauri/binaries/whisper/models/ggml-base.bin
 
 ```sh
 npm run build
+npm run prepare:tools
 npm run tauri dev
 ```
 
@@ -77,8 +86,6 @@ npm run dev
 
 ## Notes
 
-The current local environment kills Tauri macOS binding dependencies such as `objc2-foundation` / `objc2-app-kit` with `SIGKILL` during `cargo check`, before reaching this app's Rust code. The frontend build is verified. Backend verification needs a Tauri/Rust environment that can compile the macOS webview dependency tree.
-
 The project pins early Tauri 2 in `src-tauri/Cargo.toml` and keeps the early runtime stack in `Cargo.lock` to avoid the newer `objc2-foundation 0.3.x` dependency path:
 
 - `tauri = 2.0.0`
@@ -87,3 +94,10 @@ The project pins early Tauri 2 in `src-tauri/Cargo.toml` and keeps the early run
 - `tauri-runtime = 2.0.0` via lockfile
 - `tauri-runtime-wry = 2.0.0` via lockfile
 - `tauri-utils = 2.0.0` via lockfile
+
+Bundled tool licensing matters for distribution:
+
+- auto-editor is Unlicense.
+- the prepared FFmpeg libraries used by auto-editor reported LGPL v3 or later in the local build.
+- `ffmpeg-static` reports GPL-3.0-or-later.
+- `@ffprobe-installer/ffprobe` reports LGPL-2.1.
