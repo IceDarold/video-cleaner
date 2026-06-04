@@ -429,6 +429,8 @@ fn candidate_tool_paths(app: &AppHandle, command: &str) -> Vec<PathBuf> {
 
 fn candidate_model_paths(app: &AppHandle) -> Vec<PathBuf> {
     let names = [
+        "ggml-tiny.bin",
+        "ggml-tiny.en.bin",
         "ggml-base.bin",
         "ggml-small.bin",
         "ggml-medium.bin",

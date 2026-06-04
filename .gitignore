@@ -8,5 +8,8 @@
 !/src-tauri/binaries/tools/README.md
 /src-tauri/binaries/models/*
 !/src-tauri/binaries/models/README.md
+/src-tauri/binaries/whisper/*
+!/src-tauri/binaries/whisper/README.md
+!/src-tauri/binaries/whisper/models/
 /src-tauri/binaries/whisper/models/*
 !/src-tauri/binaries/whisper/models/README.md
